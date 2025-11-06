@@ -1,0 +1,8 @@
+scikit_learn
+streamlit
+joblib
+numpy
+plotly
+pydantic
+datetime
+pydantic

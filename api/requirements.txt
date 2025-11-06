@@ -1,0 +1,9 @@
+scikit_learn
+fastapi
+joblib
+numpy
+pandas
+pydantic
+uvicorn
+datetime
+pydantic

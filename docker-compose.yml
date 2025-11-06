@@ -1,0 +1,33 @@
+services:
+  # --- 1. FastAPI Prediction Service ---
+  api:
+    build:
+      context: ./api  # Path relative to /app
+      dockerfile: Dockerfile
+    container_name: prediction_api
+    ports:
+      - "8000:8000"
+    volumes:
+      # Map /app/logs host folder to /app/logs container folder
+      - ./logs:/app/logs
+      # Map the model file
+      - ./api/sentiment_model.pk1:/app/api/sentiment_model.pk1
+    command: ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8000"]
+
+  # --- 2. Streamlit Monitoring Dashboard ---
+  monitor:
+    build:
+      context: ./monitoring  # Path relative to /app
+      dockerfile: Dockerfile
+    container_name: monitoring_dashboard
+    ports:
+      - "8501:8501"
+    volumes:
+      # Map /app/logs host folder to /app/monitoring/logs container folder
+      # Note: The Streamlit app expects logs to be a sibling of app.py
+      - ./logs:/app/monitoring/logs
+      # Map the IMDB file
+      - ./monitoring/IMDB\ Dataset.csv:/app/monitoring/IMDB\ Dataset.csv
+    command: ["streamlit", "run", "app.py", "--server.port", "8501", "--server.address", "0.0.0.0"]
+    depends_on:
+      - api
